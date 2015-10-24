@@ -1,0 +1,98 @@
+---
+title: "Statistical Inference Course Project"
+author: "Bernardo Najlis"
+date: "October 24, 2015"
+output: html_document
+---
+
+#Introduction
+
+In this project we will investigate the exponential distribution in R and compare it with the Central Limit Theorem. The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. We will set lambda = 0.2 for all of the simulations. Also, we will investigate the distribution of averages of 40 exponentials over a thousand simulations.
+
+
+#Simulations
+
+```{r}
+
+lambda <- 0.2
+n <- 40
+numberOfSims <- 1000
+
+set.seed(0) #for reproducibility
+
+expDists <- matrix(data=rexp(n*numberOfSims, lambda), nrow = numberOfSims)
+expDistMeans <- data.frame(means=apply(expDists, 1, mean))
+
+hist(expDistMeans$means, breaks=100)
+```
+
+#Sample and theoretical mean
+
+The expected mean *mu* of an exponential distribution of rate *lambda* is:
+
+*mu* = 1 / *lambda*
+
+```{r}
+mu <- 1/lambda
+mu
+```
+
+Then we can calculate the average of sample means for the simulations as
+
+```{r}
+meanOfMeans <- mean(expDistMeans$means)
+meanOfMeans
+```
+
+Conclusion: the mean of means converges to the expected mean for a large number of samples (1000).
+
+#Sample and Theoretical variance
+
+The expected standard deviation *sigma* of an exponential distribution rate *lambda* is
+
+*sigma* = (1 / *lambda) / sqrt(n)
+
+```{r}
+sigma <- (1/lambda) / sqrt(n)
+sigma
+```
+
+The variance *var* of the standard deviation *sigma* is
+
+*var* = *sigma* ^ 2
+
+```{r}
+var <- sigma ^ 2
+var
+```
+
+For the simulations, let *var_x* be the variance of the average sample mean of the 1,000 simulations of 40 randomly sampled exponential distributions and *sigma_x* its standard deviation.
+
+```{r}
+sigma_x <- sd(expDistMeans$means)
+sigma_x
+```
+
+```{r}
+var_x <- var(expDistMeans$means)
+var_x
+```
+
+Conclusion: the numbers are close to each other and should get closer if the number of simulations further increases.
+
+#Distribution and approximation to normal
+
+The following chart shows the histogram of samples overlayed with a normal distribution with calculated values and the theoretical normal distribution. The theoretical an calculated distributions have a high degree of overlapping, allowing us to use the calculated one as a good approximation as the Central Limit Theorem states. 
+
+```{r}
+
+library(ggplot2)  #for plotting graphs
+
+ggplot(data = expDistMeans, aes(x = means)) + 
+  geom_histogram(binwidth=0.1, aes(y=..density..), alpha=0.2) + 
+  stat_function(fun = dnorm, arg = list(mean = mu , sd = sigma), colour = "red", size=1) + 
+  geom_density(colour="blue", size=1) +
+  scale_x_continuous(breaks=seq(mu-3,mu+3,1), limits=c(mu-3,mu+3)) + 
+  geom_vline(xintercept = mu, size=1, colour="red") + 
+  geom_vline(xintercept = meanOfMeans, size=1, colour="blue") 
+```
