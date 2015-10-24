@@ -1,0 +1,43 @@
+---
+title: "Statistical Inference Course Project - Part 2"
+author: "Bernardo Najlis"
+date: "October 24, 2015"
+output: html_document
+---
+
+#Introduction
+
+In the second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
+
+* Load the ToothGrowth data and perform some basic exploratory data analyses.
+* Provide a basic summary of the data.
+* Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+* State your conclusions and the assumptions needed for your conclusions. 
+
+#Load the ToothGrowth data and basic exploratory analysis
+
+```{r}
+library(datasets)
+data("ToothGrowth")
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+
+str(ToothGrowth)
+nrow(ToothGrowth)
+```
+
+#Basic summary of the data
+
+```{r}
+summary(ToothGrowth)
+table(ToothGrowth$dose, ToothGrowth$supp)
+
+library(ggplot2)
+ggplot(aes(x=dose, y=len), data=ToothGrowth) + geom_boxplot(aes(fill=dose))
+
+ggplot(aes(x=supp, y=len), data=ToothGrowth) + geom_boxplot(aes(fill=supp))
+```
+
+#Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose
+
+```{r}
+```
