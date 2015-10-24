@@ -2,7 +2,7 @@
 title: "Statistical Inference Course Project - Part 2"
 author: "Bernardo Najlis"
 date: "October 24, 2015"
-output: html_document
+output: pdf_document
 ---
 
 #Introduction
@@ -40,4 +40,30 @@ ggplot(aes(x=supp, y=len), data=ToothGrowth) + geom_boxplot(aes(fill=supp))
 #Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose
 
 ```{r}
+t.test(len ~ supp, data = ToothGrowth)
 ```
+
+P-value is 0.06 but as the confidence interval contains zero, we cannot reject the null hypothesis (different supplement types have no effect on tooth length). We will create three sub groups based on dose level pairs and repeat the test on each one.
+
+```{r}
+ToothGrowth_sub1 <- subset(ToothGrowth, dose %in% c(0.5, 1.0))
+ToothGrowth_sub2 <- subset(ToothGrowth, dose %in% c(0.5, 2.0))
+ToothGrowth_sub3 <- subset(ToothGrowth, dose %in% c(1.0, 2.0))
+
+t.test(len ~ dose, data = ToothGrowth_sub1)
+t.test(len ~ dose, data = ToothGrowth_sub2)
+t.test(len ~ dose, data = ToothGrowth_sub3)
+```
+
+For the new three subsets, the p-value is now less than 0.05 and the condifence interval does not contain 0. Also, the mean tooth length increases when raising the dose level, meaning that we can reject the null hypothesis and establish that *increasing the dose level leads to an increase in tooth length*.
+
+#Conclusions and assumptions
+
+- The supplement type has no effect on tooth growth
+- Increasing the dose level leads to an increase in tooth length
+
+For these conclusions to be valid, the following assumptions would have to be valid:
+
+- the guinea pigs are repesentative for the population of guinea pigs,
+- dosage and supplement were randomly assigned and
+- the distribution of the means is normal.
